@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  go-backend:
+    build: 
+      context: ./go-backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./go-backend:/app
+    ports:
+      - "9000:9000"
+    environment:
+      - ENV=development
+
+  py-services:
+    build:
+      context: ./py-services
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./py-services:/app
+    ports:
+      - "9001:9001"
+    environment:
+      - ENV=development
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"

@@ -6,15 +6,52 @@ services:
       context: ./go-backend
       dockerfile: Dockerfile
     ports:
-      - "9000:9000"
-    volumes:
-      - ./go-backend:/app
+      - "${GO_PORT:-9000}:9000"
+    environment:
+      - KAFKA_BROKERS=kafka:9092
+      - REDIS_URL=redis:6379
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - kafka
+      - redis
+      - rabbitmq
 
   py-services:
     build:
       context: ./py-services
       dockerfile: Dockerfile
     ports:
-      - "9001:9001"
-    volumes:
-      - ./py-services:/app
+      - "${PY_PORT:-9001}:9001"
+    environment:
+      - KAFKA_BROKERS=kafka:9092
+      - REDIS_URL=redis:6379
+    depends_on:
+      - kafka
+      - redis
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  elasticsearch:
+    image: elasticsearch:7.14.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"

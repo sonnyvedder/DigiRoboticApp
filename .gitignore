@@ -4,16 +4,33 @@
 
 # Go
 /go-backend/vendor/
+/go-backend/.env
 *.exe
+/go-backend/go.sum
+/go-backend/go.mod
 
 # Python
 /py-services/venv/
-__pycache__/
-*.pyc
+/py-services/__pycache__/
+/py-services/.env
+/py-services/*.pyc
+/py-services/*.pyo
+/py-services/.Python
+/py-services/pip-log.txt
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # Logs
 *.log
+logs/
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Dependencies
+node_modules/
