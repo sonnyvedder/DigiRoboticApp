@@ -1,0 +1,19 @@
+# Environment
+.env
+*.env
+
+# Go
+/go-backend/vendor/
+*.exe
+
+# Python
+/py-services/venv/
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
