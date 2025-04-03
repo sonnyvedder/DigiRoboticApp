@@ -27,6 +27,6 @@ Backend services for robotic control and automation system.
 
 1. Clone repository
 ```bash
-git clone https://github.com/YOUR-USERNAME/DigiRoboticApp.git
+git clone https://github.com/sonnyvedder/DigiRoboticApp.git
 cd DigiRoboticApp
 ```
