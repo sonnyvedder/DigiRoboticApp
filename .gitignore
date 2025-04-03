@@ -34,3 +34,7 @@ docker-compose.override.yml
 
 # Dependencies
 node_modules/
+
+data/
+scripts/
+proto/
