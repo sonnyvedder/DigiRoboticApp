@@ -1,74 +1,18 @@
 version: '3.8'
-
 services:
   go-backend:
     build: 
-      context: ./go-backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "${PORT:-9000}:9000"
-    volumes:
-      - ./logs/go:/app/logs
+      - "${DEBUG_PORT:-2345}:2345"
     environment:
       - KAFKA_BROKERS=${KAFKA_BROKERS:-kafka:9092}
-      - REDIS_URL=redis:${REDIS_PORT:-6380}
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:${RABBITMQ_PORT:-5673}/
-    depends_on:
-      - kafka
-      - redis
-      - rabbitmq
+      - REDIS_URL=${REDIS_URL:-redis:6379}
+    networks:
+      - digirobotics-network
 
-  py-services:
-    build:
-      context: ./py-services
-      dockerfile: Dockerfile
-    ports:
-      - "${PORT:-9001}:9001"
-    environment:
-      - KAFKA_BROKERS=${KAFKA_BROKERS:-kafka:9092}
-      - REDIS_URL=redis:${REDIS_PORT:-6380}
-    depends_on:
-      - kafka
-      - redis
-
-  zookeeper:
-    image: wurstmeister/zookeeper
-    ports:
-      - "2181:2181"
-
-  kafka:
-    image: wurstmeister/kafka
-    depends_on:
-      - zookeeper
-    ports:
-      - "${KAFKA_PORT:-19092}:19092"
-    environment:
-      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID:-1}
-      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT:-zookeeper:2181}
-      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
-      KAFKA_LISTENERS: ${KAFKA_LISTENERS}
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:-1}
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: ${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR:-1}
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: ${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR:-1}
-
-  redis:
-    image: redis:latest
-    ports:
-      - "${REDIS_PORT:-6380}:6379"
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "${RABBITMQ_PORT:-5673}:5672"
-      - "${RABBITMQ_MANAGEMENT_PORT:-15673}:15672"
-
-  elasticsearch:
-    image: elasticsearch:7.14.0
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms512m -Xmx512m}"
-    volumes:
-      - ./data/elasticsearch:/usr/share/elasticsearch/data
-    ports:
-      - "${ELASTICSEARCH_PORT:-9200}:9200"
+networks:
+  digirobotics-network:
+    external: true

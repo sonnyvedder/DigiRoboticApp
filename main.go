@@ -5,7 +5,7 @@ import (
     "github.com/joho/godotenv"
     "log"
     "os"
-    "digiroboticapp/api"  // Using module path
+    "digiroboticapp/api"
 )
 
 func init() {
